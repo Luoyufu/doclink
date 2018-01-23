@@ -31,7 +31,7 @@ class Consumer(RequestMetaContainer):
             status_code = resp.status_code
 
             if int(status_code) != api.expected_status_code:
-                raise StatusCodeUnexpectedError(api.expected_status_code, status_code)
+                raise StatusCodeUnexpectedError(api.expected_status_code, status_code, resp)
 
     def hook(self, resp):
         for resp_hook in self.resp_hooks:

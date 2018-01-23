@@ -18,8 +18,9 @@ class RequiredArgMissingError(DoclinkError):
 
 
 class StatusCodeUnexpectedError(DoclinkError):
-    def __init__(self, expected, status_code, msg=None):
+    def __init__(self, expected, status_code, resp, msg=None):
         self.status_code = status_code
+        self.resp = resp
         msg = msg or 'status:{}, expected:{}'.format(status_code, expected)
         super(StatusCodeUnexpectedError, self).__init__(msg)
 
