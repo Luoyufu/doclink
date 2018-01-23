@@ -1,0 +1,26 @@
+[[source]]
+
+verify_ssl = false
+url = "http://mirrors.aliyun.com/pypi/simple/"
+name = "ali"
+
+
+[[source]]
+
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+
+[packages]
+
+uritemplate = "*"
+pyyaml = "*"
+requests = "*"
+six = "*"
+
+
+[dev-packages]
+
+jupyter = "*"
+tox = "*"
