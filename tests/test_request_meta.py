@@ -1,33 +1,31 @@
 # -*- coding: utf-8 -*-
 
-import unittest
-
 from doclink.request_meta import (
     RequestMeta,
     RequestMetaContainer)
 
 
-class RequestMetaTestCase(unittest.TestCase):
+class TestRequestMeta(object):
 
     def test_update_field(self):
         request_meta = RequestMeta()
         request_meta.update({'uri': 'uri'}, method='get')
 
-        self.assertEqual(request_meta['uri'], 'uri')
-        self.assertEqual(request_meta['method'], 'get')
+        assert request_meta['uri'] == 'uri'
+        assert request_meta['method'] == 'get'
 
     def test_init_with_field(self):
         request_meta = RequestMeta({'uri': 'uri'}, method='method')
 
-        self.assertEqual(request_meta['uri'], 'uri')
-        self.assertEqual(request_meta['method'], 'method')
+        assert request_meta['uri'] == 'uri'
+        assert request_meta['method'] == 'method'
 
     def test_copy(self):
         request_meta = RequestMeta({'uri': 'uri'}, method='method')
         copy = request_meta.copy
 
-        self.assertEqual(copy, request_meta)
-        self.assertIsNot(copy, request_meta)
+        assert copy == request_meta
+        assert copy is not request_meta
 
     def test_get_url_with_path_arg(self):
         request_meta = RequestMeta(
@@ -36,7 +34,7 @@ class RequestMetaTestCase(unittest.TestCase):
             path={'arg1': 'value1'})
         url = request_meta.get_url()
 
-        self.assertEqual(url, 'https://base_uri/uri/value1')
+        assert url == 'https://base_uri/uri/value1'
 
     def test_get_url_without_path_arg(self):
         request_meta = RequestMeta(
@@ -44,16 +42,16 @@ class RequestMetaTestCase(unittest.TestCase):
             base_uri='https://base_uri/')
         url = request_meta.get_url()
 
-        self.assertEqual(url, 'https://base_uri/uri')
+        assert url == 'https://base_uri/uri'
 
 
-class RequestMetaContainerTestCase(unittest.TestCase):
+class TestRequestMetaContainer(object):
 
     def test_initialize_request_meta(self):
         request_meta_container = RequestMetaContainer()
         request_meta_container.initialize_request_meta(uri='uri')
 
-        self.assertEqual(request_meta_container.request_meta['uri'], 'uri')
+        assert request_meta_container.request_meta['uri'] == 'uri'
 
     def test_request_meta_copy(self):
         request_meta_container = RequestMetaContainer()
@@ -61,5 +59,5 @@ class RequestMetaContainerTestCase(unittest.TestCase):
 
         request_meta_copy = request_meta_container.request_meta_copy
 
-        self.assertIsNot(request_meta_container.request_meta, request_meta_copy)
-        self.assertEqual(request_meta_copy['uri'], 'uri')
+        assert request_meta_container.request_meta is not request_meta_copy
+        assert request_meta_copy['uri'] == 'uri'

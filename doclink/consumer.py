@@ -93,4 +93,4 @@ class Route(object):
 
     def __getattr__(self, name):
         api = self.consumer.apis[name]
-        return partial(api, base_uri=self.base_uri)
+        return api.partial(base_uri=self.base_uri)

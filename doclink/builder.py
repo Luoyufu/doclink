@@ -39,6 +39,7 @@ class Api(RequestMetaContainer):
 
     def _enrich_resp(self, resp, kwargs):
         """Add some extra attrs to resp.
+
         Resp hook can use these extra attrs for process.
         """
         resp.caller = self
