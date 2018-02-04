@@ -86,8 +86,10 @@ class Arg(object):
 class ArgGroup(object):
     """docstring for Arg"""
 
-    def __init__(self, group_name, raw_args=None, validators=None, normalizer=ArgNormalizer):
+    def __init__(self, group_name, raw_args=None, validators=None,
+                 arg_cls=Arg, normalizer=ArgNormalizer):
         self.group_name = group_name
+        self.arg_cls = arg_cls
         self.raw_arg_map = normalizer.normalize(raw_args)
         self.validators = validators
         self.arg_map = None
@@ -97,7 +99,7 @@ class ArgGroup(object):
         arg_map = {}
 
         for arg_name, raw_arg in self.raw_arg_map.items():
-            arg = Arg.from_raw(raw_arg)
+            arg = self.arg_cls.from_raw(raw_arg)
 
             if self.validators:
                 validator = self.validators.get(arg_name)
@@ -141,30 +143,33 @@ class ArgPredefine(object):
     It can create an arg if the arg is not defined in pydoc.
     """
 
-    def __init__(self, name=None, required=True, default=None, arg_validator=None, choices=None):
+    def __init__(self, arg_cls=Arg, arg_validator=None, choices=None,
+                 **default_attrs):
+        self.default_attrs = default_attrs
+
         if arg_validator:
             assert callable(arg_validator), 'validator must be callable'
+
+        default = self.default_attrs.get('default')
         if not (default is None or choices is None):
             if default not in choices:
                 raise ValueError('default:{} not in choices:{}'.format(default, choices))
 
-        self.name = name
-        self.default = default
-        self.required = required
+        self.name = None
         self.arg_validator = arg_validator
         self.choices = choices
 
     def create_arg(self):
-        return Arg(self.name, alias=None,
-                   required=self.required,
-                   default=self.default)
+        return self.arg_cls(
+            self.name, **self.default_attrs)
 
     def __get__(self, instance, owner):
         return instance.arg_map[self.name]
 
     def __set__(self, instance, arg):
-        if not isinstance(arg, Arg):
-            raise ValueError('Arg instacne required: {}'.format(type(arg)))
+        if not isinstance(arg, self.arg_cls):
+            raise ValueError('{} instacne required: {}'.format(
+                self.arg_cls.__name__, type(arg).__name__))
         if self.storage_name is None:
             raise RuntimeError('set Arg before storage_name determined')
 
@@ -209,7 +214,7 @@ class PredefinedArgGroup(ArgGroup):
         for arg_predefine in self.arg_predefines:
             arg_name = arg_predefine.name
             if arg_name in self.raw_arg_map:
-                arg = Arg.from_raw(self.raw_arg_map[arg_name])
+                arg = self.arg_cls.from_raw(self.raw_arg_map[arg_name])
             else:
                 arg = arg_predefine.create_arg()
 

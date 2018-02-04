@@ -18,6 +18,7 @@ uritemplate = "*"
 pyyaml = "*"
 requests = "*"
 six = "*"
+requests-toolbelt = "*"
 
 
 [dev-packages]

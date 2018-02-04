@@ -5,7 +5,16 @@ from .models import PredefinedArgGroup
 from .models import ArgPredefine
 
 _arg_group_map = {}
-common_arg_group_names = ('params', 'headers', 'json', 'data', 'params', 'cookies', 'files', 'path')
+common_arg_group_names = (
+    'params',
+    'headers',
+    'json',
+    'data',
+    'params',
+    'cookies',
+    'files',
+    'path',
+    'multipart')
 
 
 def register_arg_group(group_name):
