@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import os
+
 from collections import namedtuple
 
 from uritemplate import URITemplate
@@ -77,3 +79,11 @@ def raw_args_from_uri(uri):
         raw_args.append({name: {'default': default}})
 
     return raw_args
+
+
+def guess_filename(obj):
+    """Tries to guess the filename of the given object."""
+    name = getattr(obj, 'name', None)
+    if (name and isinstance(name, str) and name[0] != '<' and
+            name[-1] != '>'):
+        return os.path.basename(name)
