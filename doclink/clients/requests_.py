@@ -5,6 +5,8 @@ import os
 
 import requests
 from requests_toolbelt import MultipartEncoder
+from six import string_types
+
 from .. import utils
 
 
@@ -13,7 +15,8 @@ class RequestsClient(object):
     optional_args = (
         'params', 'data', 'headers', 'cookies', 'files',
         'auth', 'timeout', 'allow_redirects', 'proxies',
-        'hooks', 'stream', 'verify', 'cert', 'json')
+        'hooks', 'stream', 'verify', 'cert', 'json',
+        'multipart')
 
     def __init__(self, session=None):
         if session is None:
@@ -87,7 +90,7 @@ class RequestsClient(object):
                     open('report.xls', 'rb')
                     ('report.xls', open('report.xls', 'rb'))
             """
-            if isinstance(file_info, str):
+            if isinstance(file_info, string_types):
                 try:
                     return open(file_info, 'rb')
                 except (IOError, TypeError):
@@ -154,7 +157,7 @@ class RequestsClient(object):
                     open('report.xls', 'rb')
                     ('report.xls', open('report.xls', 'rb'))
             """
-            if isinstance(item_info, str):
+            if isinstance(item_info, string_types):
                 try:
                     return (os.path.basename(item_info), open(item_info, 'rb'))
                 except (IOError, TypeError):
