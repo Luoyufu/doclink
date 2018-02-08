@@ -137,7 +137,7 @@ class ArgGroup(object):
 
 
 class ArgPredefine(object):
-    """a descriptor for arg predefinition
+    """Descriptor for arg predefinition.
 
     set it with Arg instance.
     It can create an arg if the arg is not defined in pydoc.
@@ -156,12 +156,12 @@ class ArgPredefine(object):
                 raise ValueError('default:{} not in choices:{}'.format(default, choices))
 
         self.name = None
+        self.arg_cls = arg_cls
         self.arg_validator = arg_validator
         self.choices = choices
 
     def create_arg(self):
-        return self.arg_cls(
-            self.name, **self.default_attrs)
+        return self.arg_cls(self.name, **self.default_attrs)
 
     def __get__(self, instance, owner):
         return instance.arg_map[self.name]

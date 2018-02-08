@@ -7,8 +7,6 @@ import requests
 from requests_toolbelt import MultipartEncoder
 from six import string_types
 
-from .. import utils
-
 
 class RequestsClient(object):
 
@@ -57,7 +55,7 @@ class RequestsClient(object):
         return sending_kwargs
 
     @classmethod
-    def _create_files_arg(self, files_meta):
+    def _create_files_arg(cls, files_meta):
         """Create files arg for requests.
 
         Args:
@@ -70,19 +68,8 @@ class RequestsClient(object):
             """Nested function to create a file item for files arg.
 
             Args:
-                File_info (str/tuple/file-like): file_path str, file_info tuple
-                    or file-like object. For example:
-
-                    str:
-                        'file_path.avi'
-                    file-like:
-                        open('file_path.avi')
-                    2 elemets tuple:
-                        (file_name, file-like/str)
-                    3 elemets tuple:
-                        (file name, file-like, 'application/<application>')
-                    4 elemets tuple:
-                        (file_name, file-like, 'application/<application>', headers)
+                File_info: If it's a file_path str, open it as file_object.
+                    Else, pass it to requests files arg.
 
             Returns:
                 File instance or file_info tuple. For example:
@@ -90,13 +77,14 @@ class RequestsClient(object):
                     open('report.xls', 'rb')
                     ('report.xls', open('report.xls', 'rb'))
             """
+
             if isinstance(file_info, string_types):
                 try:
-                    return open(file_info, 'rb')
+                    return open(file_info, 'rb')  # param is file_path
                 except (IOError, TypeError):
-                    return file_info
-            else:
-                return file_info
+                    pass
+
+            return file_info
 
         files_arg = {}
 
@@ -109,14 +97,14 @@ class RequestsClient(object):
         return files_arg
 
     @classmethod
-    def _create_auth_arg(self, auth_meta):
+    def _create_auth_arg(cls, auth_meta):
         if auth_meta['type'] == 'basic':
             return requests.auth.HTTPBasicAuth(auth_meta['username'], auth_meta['password'])
         else:
             return requests.auth.HTTPDigestAuth(auth_meta['username'], auth_meta['password'])
 
     @classmethod
-    def _create_multipart_arg(self, multipart_meta):
+    def _create_multipart_arg(cls, multipart_meta):
         """Create a MultipartEncoder instance for multipart/form-data.
 
         Requests_toolbelt will not try to guess file_name. To encode a file we need
@@ -124,53 +112,32 @@ class RequestsClient(object):
 
         Args:
             multipart_meta (dict): Map field name to multipart form-data value.
-                For example:
-
-                {
-                    'field1': 'value1',
-                    'field2': <file_path>
-                }
         """
 
         def create_multipart_item(item_info):
             """Nested function to create a multipart item for files arg.
 
             Args:
-                File_info (str/tuple/file-like): file_path str, file_info tuple
-                    or file-like object. For example:
-
-                    str(file_path):
-                        'file_path.avi' -> (file_path.avi, open('file_path'))
-                    str(value):
-                    file-like:
-                        open('file_path.avi') -> (os.path.basename(file-like.name), file-like)
-                    2 elemets tuple:
-                        (file_name, file-like/str)
-                    3 elemets tuple:
-                        (file_name, file-like, 'application/<application>')
-                    4 elemets tuple:
-                        (file_name, file-like, 'application/<application>', headers)
+                item_info: If it's a file_path str, open it as file_object as set file_name.
+                    Else, pass it to requests_toolbelt MultipartEncoder.
 
             Returns:
                 File instance or file_info tuple. For example:
 
-                    open('report.xls', 'rb')
                     ('report.xls', open('report.xls', 'rb'))
             """
             if isinstance(item_info, string_types):
                 try:
-                    return (os.path.basename(item_info), open(item_info, 'rb'))
+                    return (os.path.basename(item_info), open(item_info, 'rb'))  # file_path
                 except (IOError, TypeError):
-                    # this item_info is a value
-                    return item_info
-            elif isinstance(item_info, (tuple, list)):
-                return item_info
-            else:
-                file_name = utils.guess_filename(item_info)
-                if file_name:
-                    return (file_name, item_info)
-                else:
-                    return item_info
+                    pass
+
+            try:
+                return (os.path.basename(item_info.name), item_info)  # file_object
+            except AttributeError:
+                pass
+
+            return item_info
 
         multipart_arg = {}
 

@@ -6,7 +6,7 @@ from doclink import meta_parser
 from doclink.exceptions import InvalidApimetaItemError
 
 
-class TestBuilder(object):
+class FakeBuilder(object):
     def build_arg_group(self, group_name, raw_args):
         self.arg_group_name = {group_name: raw_args}
 
@@ -31,7 +31,7 @@ class TestParseObserver(unittest.TestCase):
         self.assertIn('expected_status_code', event_handle_map)
 
     def test_trigger_event(self):
-        builder = TestBuilder()
+        builder = FakeBuilder()
 
         parse_observer = meta_parser.ParseObserver()
         parse_observer.set_builder(builder)
@@ -46,7 +46,7 @@ class TestParseObserver(unittest.TestCase):
         self.assertEqual(builder.expected_status_code, 200)
 
     def test_trigger_event_invalid(self):
-        builder = TestBuilder
+        builder = FakeBuilder()
 
         parse_observer = meta_parser.ParseObserver()
         parse_observer.set_builder(builder)

@@ -202,7 +202,8 @@ class TestArgGroup(object):
 class TestPredefinedArgGroup(object):
 
     def test_arg_predefine_create_arg(self):
-        arg_predefine = arg.ArgPredefine(name='name', default='basic', choices=['basic', 'digest'])
+        arg_predefine = arg.ArgPredefine(default='basic', choices=['basic', 'digest'])
+        arg_predefine.name = 'name'
         arg_ = arg_predefine.create_arg()
 
         assert arg_.name == 'name'
@@ -212,7 +213,7 @@ class TestPredefinedArgGroup(object):
 
     def test_arg_predefine_default_not_in_choices(self):
         with pytest.raises(ValueError):
-            arg.ArgPredefine(name='name', default='ohter', choices=['basic', 'digest'])
+            arg.ArgPredefine(default='ohter', choices=['basic', 'digest'])
 
     def test_predefined_arg_group_init(self):
         class TestGroup(arg.PredefinedArgGroup):
