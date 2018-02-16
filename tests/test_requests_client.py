@@ -3,6 +3,18 @@
 from doclink.clients.requests_ import RequestsClient
 
 
+class FakeRequestMeta(dict):
+
+    def get_url(self):
+        return 'http://fake_url'
+
+
+class FakeSession(object):
+
+    def request(self, **kwargs):
+        return 'ok'
+
+
 class TestCreateFilesArg(object):
 
     def test_with_file_path(self):
@@ -95,3 +107,36 @@ class TestCreateMultipartArg(object):
         result = client._create_multipart_arg(request_meta['multipart'])
 
         assert result == {'field': ('filename', str_arg)}
+
+
+class TestRequestsClient(object):
+
+    def test_get_sending_kwargs(self):
+        client = RequestsClient()
+        request_meta = FakeRequestMeta({
+            'method': 'get',
+            'params': {
+                'param_arg1': 'param_value1',
+                'param_arg2': 'param_value2'},
+            'unknown': 'unknown'})
+
+        kwargs = client._get_sending_kwargs(request_meta)
+
+        assert kwargs == {
+            'method': 'get',
+            'url': 'http://fake_url',
+            'params': {
+                'param_arg1': 'param_value1',
+                'param_arg2': 'param_value2'},
+        }
+
+    def test_request(self):
+        client = RequestsClient(FakeSession())
+        request_meta = FakeRequestMeta({
+            'method': 'get',
+            'params': {
+                'param_arg1': 'param_value1',
+                'param_arg2': 'param_value2'},
+            'unknown': 'unknown'})
+
+        assert client.request(request_meta) == 'ok'

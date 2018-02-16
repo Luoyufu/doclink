@@ -19,6 +19,7 @@ pyyaml = "*"
 requests = "*"
 six = "*"
 requests-toolbelt = "*"
+selenium = "*"
 
 
 [dev-packages]

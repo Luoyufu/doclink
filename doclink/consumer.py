@@ -10,9 +10,17 @@ from .exceptions import StatusCodeUnexpectedError
 
 
 class Consumer(RequestMetaContainer):
-    """docstring for ConsumerBase"""
+    """Api consumer contains all the declared api.
 
-    router = None
+    Attributes:
+        base_uri (str): the base uri of an Api. For example:
+            The base_uri of 'https://api.github.com/resource?page=2'
+            should be 'https://api.github.com'.
+        apis (list[doclink.builder:Api]): Api definitions.
+        resp_hooks (list[callable]): Consumer level resp_hooks(resp middleware)
+        client: Client to send http request.
+        expected_status_code (integer): The default expected status_code.
+    """
 
     def __init__(self, base_uri, expected_status_code=None, client=None, **meta_kwargs):
         super(Consumer, self).__init__()
@@ -60,6 +68,9 @@ class Consumer(RequestMetaContainer):
 
     @property
     def router(self):
+        """A router must be implemented with a get method for base_uri selection.
+        When performing routing, get method an router will be called.
+        """
         return self._router
 
     @router.setter
@@ -67,9 +78,27 @@ class Consumer(RequestMetaContainer):
         self._router = router
 
     def routing(self, route_key):
+        """Get route of selected base_uri from router based on route_key.
+
+        Args:
+            route_key: Used to select base_uri.
+
+        Returns:
+            Route: The route holds selected base_uri.
+        """
         return Route(self, base_uri=self.get_routed_uri(route_key))
 
     def get_routed_uri(self, route_key):
+        """Select uri based on route_key.
+
+        If it returns None, the ``base_uri`` of consumer will be used as default.
+
+        Args:
+            route_key: Used to select base_uri.
+
+        Returns:
+            str: The selected base_uri.
+        """
         if self.router:
             return self.router.get(route_key) or self.base_uri
         else:

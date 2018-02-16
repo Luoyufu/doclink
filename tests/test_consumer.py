@@ -3,6 +3,7 @@
 import unittest
 
 from doclink import Consumer
+from doclink.consumer import Route
 from doclink.exceptions import StatusCodeUnexpectedError
 
 
@@ -13,8 +14,11 @@ class MockResp(object):
 
 class MockApi(object):
 
-    def __init__(self, status_code):
+    def __init__(self, status_code=200):
         self.expected_status_code = status_code
+
+    def partial(self, base_uri):
+        return base_uri
 
 
 class ConsumerTestCase(unittest.TestCase):
@@ -101,3 +105,38 @@ class ConsumerTestCase(unittest.TestCase):
         self.assertIs(result, None)
         self.assertEqual(resp.hook1_hooked, True)
         self.assertEqual(resp.hook2_hooked, True)
+
+    def test_routing_on_route_key(self):
+        consumer = Consumer('base_uri')
+        consumer.router = {
+            'key1': 'base_uri1',
+            'key2': 'base_uri2'
+        }
+
+        route = consumer.routing('key1')
+
+        assert route.base_uri == 'base_uri1'
+
+    def test_routing_on_default(self):
+        consumer = Consumer('base_uri')
+        consumer.router = {
+            'key1': 'base_uri1',
+            'key2': 'base_uri2'
+        }
+
+        route = consumer.routing('other_key')
+
+        assert route.base_uri == 'base_uri'
+
+    def test_route(self):
+        api1 = MockApi()
+        api2 = MockApi()
+
+        consumer = Consumer('base_uri')
+
+        consumer.apis['api1'] = api1
+        consumer.apis['api2'] = api2
+
+        route = Route(consumer, 'selected_uri')
+
+        assert route.api1 == 'selected_uri'
