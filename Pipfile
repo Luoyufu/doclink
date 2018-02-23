@@ -19,11 +19,13 @@ pyyaml = "*"
 requests = "*"
 six = "*"
 requests-toolbelt = "*"
-selenium = "*"
 
 
 [dev-packages]
 
-jupyter = "*"
 tox = "*"
 pytest = "*"
+detox = "*"
+pytest-cov = "*"
+pytest-xdist = "*"
+codecov = "*"

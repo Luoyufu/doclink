@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from json import JSONDecodeError
-
 import pytest
 
 from doclink import Consumer
@@ -16,7 +14,7 @@ def consumer():
     def json_hook(resp):
         try:
             return resp.json()
-        except JSONDecodeError:
+        except ValueError:
             pass
 
     @consumer.get('/basic-auth/{username}/{password}')

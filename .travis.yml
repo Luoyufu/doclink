@@ -1,0 +1,24 @@
+sudo: false
+language: python
+pthon:
+- '2.7'
+- '3.4'
+- '3.5'
+- '3.6'
+cache: pip
+install:
+- pip install pipenv --upgrade
+- pipenv install --dev --skip-lock
+script:
+- pipenv run py.test -n 4 --boxed --junitxml=report.xml
+after_success:
+  - codecov
+deploy:
+  provider: pypi
+  user: yufu_luo
+  password:
+    secure: PeOfaMviA8LQ5nMeT6eZsyhiyPEa4D6xkrVDmPjL3mglcKIYxq3P5BZ1/Wyaddm40eWNRGjeqFPQC/2SdVkgaY0nPTlGRWPwDZZJ/s41uCHUPkUWzh7BEJLEwtqtekaJaolkIGwlgEZkbjZERoyX35S3XKmeGyu8R00IQZDN/dNOhfK2JPXno21PcaEVR1MedNaNYpobDl4IBkUBrGIGABYWEmvDCdDmCiCfTYDVYdqTpIGou04vq2qm4o2moTTZ/ZIaPf8tJmHFpyAe32CgqChYxFXjw5mvJBuPXiHAyfO2QdyxCkSLT58WPRniFO8ZnJqjoj4rQGYDCAWDkwNmVjxH9C+UZPjD4QO+cqmLFqXkkvJw7zoFMOyBRx6cPQmxP9AnF9morz0MKe4c46VBuUMh2XxFw1YyqHURT/As/ynmEkspxU4i4D7oFQM4KqA8NCk9MKfC4s8abW+qAtNd/bT6LTQbTseL+7687UUv9y0ywbBSR0gALIXino8UB8wIBJmZGsZ11EaTYGMchnVkPDVtI5FOGPIah2isDeIinKPaujjQH/AsFeJXp7Hjdu5IrFx2lx1nRNjfioZgo/ElTyw6IzpKh1WKQqdewtd9BJ3rPQbeUbifKeg/Y+o2CVsARhruGtau3M++ADE4+yXn6nCsVT09RVLbAGPkxat+jtQ=
+  on:
+    tags: true
+    python: '3.6'
+  distributions: sdist bdist_wheel

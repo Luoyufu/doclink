@@ -12,7 +12,8 @@ requires = [
     'requests>=2.18.0',
     'uritemplate>=3.0.0',
     'pyyaml>=3.12',
-    'six>=1.11.0'
+    'requests-toolbelt>=0.8.0',
+    'six>=1.11.0',
 ]
 
 
@@ -42,6 +43,8 @@ setup(
     author_email=about['__author_email__'],
     packages=find_packages(exclude=("tests",)),
     install_requires=requires,
+    setup_requires=['pytest-runner'],
+    tests_require=['pytest', 'pytest-cov', 'pytest-xdist'],
     include_package_data=True,
     license='MIT',
     classifiers=[

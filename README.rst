@@ -1,6 +1,9 @@
 *******
 Doclink
 *******
+
+|Build Status| |PyPI| |PyPI version|
+
 | Build client for Web APIs from pydoc. Inspired by `Uplink <https://github.com/prkumar/uplink>`_.
 
 Overview
