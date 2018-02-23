@@ -8,6 +8,12 @@ Doclink
 .. image:: https://codecov.io/gh/Luoyufu/doclink/branch/master/graph/badge.svg
   :target: https://codecov.io/gh/Luoyufu/doclink
 
+.. image:: https://img.shields.io/pypi/v/doclink.svg
+  :target: https://pypi.python.org/pypi/doclink
+
+.. image:: https://img.shields.io/pypi/pyversions/doclink.svg
+  :target: https://pypi.python.org/pypi/doclink
+
 | Build client for Web APIs from pydoc. Inspired by `Uplink <https://github.com/prkumar/uplink>`_.
 
 Overview
