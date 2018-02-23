@@ -104,3 +104,5 @@ ENV/
 project.sublime-workspace
 Vagrantfile
 /.vagrant
+
+/report.xml
