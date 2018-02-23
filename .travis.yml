@@ -1,15 +1,15 @@
 sudo: false
 language: python
 pthon:
+  - '2.7'
   - '3.4'
   - '3.5'
   - '3.6'
-cache: pip
 install:
   - pip install pipenv --upgrade
   - pipenv install --dev --skip-lock
 script:
-  - pipenv run py.test -n 4 --boxed --junitxml=report.xml
+  - pipenv run py.test --verbose --cov-report term --cov-report xml --junitxml=report.xml --cov=doclink tests
 after_success:
   - codecov
 deploy:
