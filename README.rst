@@ -2,7 +2,11 @@
 Doclink
 *******
 
-|Build Status| |PyPI| |PyPI version|
+.. image:: https://travis-ci.org/Luoyufu/doclink.svg?branch=master
+    :target: https://travis-ci.org/Luoyufu/doclink
+
+.. image:: https://codecov.io/gh/Luoyufu/doclink/branch/master/graph/badge.svg
+  :target: https://codecov.io/gh/Luoyufu/doclink
 
 | Build client for Web APIs from pydoc. Inspired by `Uplink <https://github.com/prkumar/uplink>`_.
 
