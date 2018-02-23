@@ -1,22 +1,23 @@
 sudo: false
 language: python
 python:
-  - '2.7'
-  - '3.4'
-  - '3.5'
-  - '3.6'
+- '2.7'
+- '3.4'
+- '3.5'
+- '3.6'
 install:
-  - pip install pipenv --upgrade
-  - pipenv install --dev --skip-lock
+- pip install pipenv --upgrade
+- pipenv install --dev --skip-lock
 script:
-  - pipenv run py.test --verbose --cov-report term --cov-report xml --junitxml=report.xml --cov=doclink tests
+- pipenv run py.test --verbose --cov-report term --cov-report xml --junitxml=report.xml
+  --cov=doclink tests
 after_success:
-  - codecov
+- codecov
 deploy:
   provider: pypi
   user: yufu_luo
   password:
-    secure: PeOfaMviA8LQ5nMeT6eZsyhiyPEa4D6xkrVDmPjL3mglcKIYxq3P5BZ1/Wyaddm40eWNRGjeqFPQC/2SdVkgaY0nPTlGRWPwDZZJ/s41uCHUPkUWzh7BEJLEwtqtekaJaolkIGwlgEZkbjZERoyX35S3XKmeGyu8R00IQZDN/dNOhfK2JPXno21PcaEVR1MedNaNYpobDl4IBkUBrGIGABYWEmvDCdDmCiCfTYDVYdqTpIGou04vq2qm4o2moTTZ/ZIaPf8tJmHFpyAe32CgqChYxFXjw5mvJBuPXiHAyfO2QdyxCkSLT58WPRniFO8ZnJqjoj4rQGYDCAWDkwNmVjxH9C+UZPjD4QO+cqmLFqXkkvJw7zoFMOyBRx6cPQmxP9AnF9morz0MKe4c46VBuUMh2XxFw1YyqHURT/As/ynmEkspxU4i4D7oFQM4KqA8NCk9MKfC4s8abW+qAtNd/bT6LTQbTseL+7687UUv9y0ywbBSR0gALIXino8UB8wIBJmZGsZ11EaTYGMchnVkPDVtI5FOGPIah2isDeIinKPaujjQH/AsFeJXp7Hjdu5IrFx2lx1nRNjfioZgo/ElTyw6IzpKh1WKQqdewtd9BJ3rPQbeUbifKeg/Y+o2CVsARhruGtau3M++ADE4+yXn6nCsVT09RVLbAGPkxat+jtQ=
+    secure: oVJi2mM2BGhgBALSKfoeUH1sDYMp9ZYZmVNaT4gIfzaP/F3QbHh931GxDu4+az121IDGaE+TlYfEbJSvaU1B0TyEQ7gITNGqqgG2JkAFBr1cQjADcoCd8j6hF53/r/7+te3gu8ew5QXOSUDRirYipHn2I/MiMvGP8uaWrtzHRgUYVae0DCd7uWRPO95tD0mxh9hwr0JoS/G4l9tj/zfznETJj/1Zw4Kg/YJn2u87j8QMLX9+xyQCXmPn50KUArjB2l+Lp7f4+L4B+TykzTmcXiRaxXMi+UP9sLTXchspGY3jib2MoBU/uxwQchh0kH8ZlNVgpBGOUO2xwAm83MAych01+92tzNcTBwjarwgG6t1K13zwyc4pTp/iJMXSSU/b/FH0Bl83tvBbhLfq6fBIbJQsN8wZgnxKuS5z/l7p//LYGLPzDodvid+F+eAVoAyIlGShFOWge5DuW9ZqFhlvZazEQOsUTg8Jx09wcnGANyLaUhBeavxEWu/5WIgVjnDSIFC9yRRAqKXtE6eFf00CdELl6oKceI0BoBUjG1+3x/h5ZkpDWirF54Dd/pS3aFT9GVOnCRLOtmCk8+0YpoSulVvDF9wgx7RUZDKPSWiVW3ZHkPsMAg4ECoM3V1VRunm9ngZ56Kl4EbP4Ct+sw08XfWAK7ZjJTdvuDImjp6+iKRg=
   on:
     tags: true
     python: '3.6'
