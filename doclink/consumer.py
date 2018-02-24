@@ -22,7 +22,8 @@ class Consumer(RequestMetaContainer):
         expected_status_code (integer): The default expected status_code.
     """
 
-    def __init__(self, base_uri, expected_status_code=None, client=None, **meta_kwargs):
+    def __init__(self, base_uri='http://localhost',
+                 expected_status_code=None, client=None, **meta_kwargs):
         super(Consumer, self).__init__()
         self.base_uri = base_uri
         self.initialize_request_meta(base_uri=base_uri, **meta_kwargs)
