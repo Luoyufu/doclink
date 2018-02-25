@@ -24,12 +24,20 @@ class Api(RequestMetaContainer):
             uri=uri,
             method=http_method)
         self.expected_status_code = consumer.expected_status_code
+        self.resp_hooks = [consumer.hook]
+
+    def add_resp_hook(self, hook):
+        if not callable(hook):
+            raise ValueError('resp_hook must be callable')
+
+        self.resp_hooks.append(hook)
 
     def _handle_resp(self, resp):
-        hook_result = self.consumer.hook(resp)
+        for resp_hook in self.resp_hooks:
+            hook_result = resp_hook(resp)
 
-        if hook_result is not None:
-            return hook_result
+            if hook_result is not None:
+                return hook_result
 
         result = self.func(resp)
         if result is None:
@@ -56,13 +64,14 @@ class Api(RequestMetaContainer):
         request_meta = self.request_meta_copy
 
         # merge all the used_arg_set
-        used_arg_set = reduce(
-            or_,
-            (arg_group.process_request_meta(request_meta, input_kwargs)
-             for arg_group in self.arg_groups))
+        if self.arg_groups:
+            used_arg_set = reduce(
+                or_,
+                (arg_group.process_request_meta(request_meta, input_kwargs)
+                 for arg_group in self.arg_groups))
 
-        for used_arg in used_arg_set:
-            input_kwargs.pop(used_arg, None)
+            for used_arg in used_arg_set:
+                input_kwargs.pop(used_arg, None)
 
         request_meta.update(input_kwargs)
         resp = self.consumer.client.request(request_meta)

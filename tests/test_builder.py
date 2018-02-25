@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import pytest
+
 from doclink.consumer import Consumer
 from doclink.builder import Api
 
@@ -53,3 +55,20 @@ class TestApi(object):
         assert p.args == ()
         assert p.keywords == {'arg': 'value'}
         assert p.func is api
+
+    def test_resp_hook(self):
+        def mock_hook(resp):
+            return resp.status_code
+
+        api = Api('test', consumer, 'get', 'uri', mock_func)
+        api.add_resp_hook(mock_hook)
+
+        result = api()
+
+        assert result == 200
+
+    def test_resp_hook_not_callable(self):
+        api = Api('test', consumer, 'get', 'uri', mock_func)
+
+        with pytest.raises(ValueError):
+            api.add_resp_hook(None)

@@ -4,19 +4,14 @@ import pytest
 
 from doclink import Consumer
 from doclink.exceptions import StatusCodeUnexpectedError
+from doclink import jsonify
 
 
 @pytest.fixture(scope='module')
 def consumer():
     consumer = Consumer('http://httpbin.org')
 
-    @consumer.resp_hook
-    def json_hook(resp):
-        try:
-            return resp.json()
-        except ValueError:
-            pass
-
+    @jsonify
     @consumer.get('/basic-auth/{username}/{password}')
     def basic_auth(resp):
         """
@@ -26,6 +21,7 @@ def consumer():
         </meta>
         """
 
+    @jsonify
     @consumer.post('/post')
     def form_post(resp):
         """
@@ -37,6 +33,7 @@ def consumer():
         </meta>
         """
 
+    @jsonify
     @consumer.post('/post')
     def file_post(resp):
         """
