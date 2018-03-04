@@ -48,15 +48,21 @@ class Consumer(RequestMetaContainer):
             if result is not None:
                 return result
 
-    def api(self, http_method, uri, arg_validators=None):
+    def api(self, http_method, uri,
+            arg_validators=None,
+            on_request=None):
         """decorator to create an api"""
         if arg_validators is not None:
             if not isinstance(arg_validators, dict):
                 raise ValueError('arg_validators should be a dict instance')
 
+        if on_request is not None:
+            if not callable(on_request):
+                raise ValueError('on_request should be a callable')
+
         def deco(func):
             name = func.__name__
-            api = build_api(self, http_method, uri, func, arg_validators)
+            api = build_api(self, http_method, uri, func, arg_validators, on_request)
 
             self.apis[name] = api
 

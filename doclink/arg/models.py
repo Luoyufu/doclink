@@ -84,7 +84,6 @@ class Arg(object):
 
 
 class ArgGroup(object):
-    """docstring for Arg"""
 
     def __init__(self, group_name, raw_args=None, validators=None,
                  arg_cls=Arg, normalizer=ArgNormalizer):

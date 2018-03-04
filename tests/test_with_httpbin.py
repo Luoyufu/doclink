@@ -9,10 +9,21 @@ from doclink import jsonify
 
 @pytest.fixture(scope='module')
 def consumer():
+    class OnRequest(object):
+
+        def __init__(self):
+            self.called = False
+
+        def __call__(self, request_meta):
+            self.called = True
+
+    on_request = OnRequest()
+
     consumer = Consumer('http://httpbin.org')
 
     @jsonify
-    @consumer.get('/basic-auth/{username}/{password}')
+    @consumer.get('/basic-auth/{username}/{password}',
+                  on_request=on_request)
     def basic_auth(resp):
         """
         <meta>
@@ -61,6 +72,7 @@ class TestDoclink(object):
     def test_basic_auth(self, consumer):
         resp_json = consumer.basic_auth(username='user', password='passwd')
 
+        assert consumer.basic_auth._on_request.called
         assert resp_json == {'authenticated': True, 'user': 'user'}
 
     def test_forms_post(self, consumer):

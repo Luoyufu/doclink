@@ -25,6 +25,10 @@ class Api(RequestMetaContainer):
             method=http_method)
         self.expected_status_code = consumer.expected_status_code
         self.resp_hooks = [consumer.hook]
+        self._on_request = None
+
+    def on_request(self, callback):
+        self._on_request = callback
 
     def add_resp_hook(self, hook):
         if not callable(hook):
@@ -74,6 +78,10 @@ class Api(RequestMetaContainer):
                 input_kwargs.pop(used_arg, None)
 
         request_meta.update(input_kwargs)
+
+        if self._on_request:
+            self._on_request(request_meta)
+
         resp = self.consumer.client.request(request_meta)
         self._enrich_resp(resp, kwargs)
 
@@ -88,10 +96,15 @@ class Api(RequestMetaContainer):
 
 class ApiBuilder(object):
 
-    def __init__(self, consumer, http_method, uri, func, parser, arg_validators=None):
+    def __init__(self, consumer, http_method, uri, func, parser,
+                 arg_validators=None, on_request=None):
         self._api = Api(func.__name__, consumer, http_method, uri, func)
         self.arg_validators = arg_validators
         self.parser = parser
+
+        if on_request:
+            self._api.on_request(on_request)
+
         self.build_path_arg_group(uri)
 
     def build_path_arg_group(self, uri):
@@ -123,7 +136,7 @@ class ApiBuilder(object):
         return self._api
 
 
-def build_api(consumer, http_method, uri, func, arg_validators=None):
+def build_api(consumer, http_method, uri, func, arg_validators=None, on_request=None):
     parser = creat_parser(func.__doc__)
-    builder = ApiBuilder(consumer, http_method, uri, func, parser, arg_validators)
+    builder = ApiBuilder(consumer, http_method, uri, func, parser, arg_validators, on_request)
     return builder.build()

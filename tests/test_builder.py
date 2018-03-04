@@ -3,7 +3,7 @@
 import pytest
 
 from doclink.consumer import Consumer
-from doclink.builder import Api
+from doclink.builder import Api, ApiBuilder
 
 
 class MockClient(object):
@@ -72,3 +72,33 @@ class TestApi(object):
 
         with pytest.raises(ValueError):
             api.add_resp_hook(None)
+
+    def test_on_request(self):
+        api = Api('test', consumer, 'get', 'uri', mock_func)
+
+        class OnRequest(object):
+
+            def __init__(self):
+                self.called = False
+
+            def __call__(self, request_meta):
+                self.called = True
+
+        on_request = OnRequest()
+        api.on_request(on_request)
+
+        result = api()
+
+        assert on_request.called
+        assert result.status_code == 200
+
+
+class TestApiBuilder(object):
+
+    def test_build_path_arg_group(self):
+        api_builder = ApiBuilder(consumer, 'get', '/uri/{query1=query1}', mock_func, parser=None)
+
+        path_arg_group = api_builder._api.arg_groups[0]
+
+        assert path_arg_group.group_name == 'path'
+        assert path_arg_group.arg_map['query1'].default == 'query1'

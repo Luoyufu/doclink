@@ -31,6 +31,14 @@ class ConsumerTestCase(unittest.TestCase):
             def api_func(resp):
                 pass
 
+    def test_api_deco_invalid_on_request(self):
+        cs = Consumer('http://test')
+
+        with self.assertRaises(ValueError):
+            @cs.get('/uri', on_request=['test'])
+            def api_func(resp):
+                pass
+
     def test_check_status_expect(self):
         api = MockApi(200)
         resp = MockResp(200)
